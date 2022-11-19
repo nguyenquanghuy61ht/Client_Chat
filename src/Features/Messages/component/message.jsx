@@ -11,6 +11,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import VideocamIcon from "@mui/icons-material/Videocam";
+import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
 import IconButton from "@material-ui/core/IconButton";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -27,7 +29,6 @@ import storageKeys from "../../../constants/storage-keys";
 import { Online } from "../messSlice";
 import Picker from "emoji-picker-react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { useSnackbar } from "notistack";
 import Delete from "./Delete";
@@ -361,7 +362,8 @@ function Message({ userIds, onChange }) {
         console.log(err);
       }
     };
-    getUserMedia();
+    const bat = false;
+    if (bat === true) getUserMedia();
   }, []);
 
   const callUser = (id) => {
@@ -410,18 +412,37 @@ function Message({ userIds, onChange }) {
   };
 
   const leaveCall = () => {
-    socketRef.current.emit("callEnded", { to: caller });
+    console.log(caller);
+    socketRef.current.emit("callEnded", { to: userId2 });
     setCallEnded(true);
     connectionRef.current.destroy();
     window.location.reload();
+
+   
+
   };
 
   useEffect(() => {
     socketRef.current.on("callEnded", (data) => {
+      console.log(data);
+
       setCallEnded(true);
+      connectionRef.current.destroy();
       window.location.reload();
     });
   }, []);
+
+  function muteMic() {
+    stream
+      .getAudioTracks()
+      .forEach((track) => (track.enabled = !track.enabled));
+  }
+
+  function muteCam() {
+    stream
+      .getVideoTracks()
+      .forEach((track) => (track.enabled = !track.enabled));
+  }
 
   return (
     <Box component="div" className={classes.rootContent}>
@@ -506,7 +527,8 @@ function Message({ userIds, onChange }) {
           <div className="container">
             <div className="video-container">
               <div className="video">
-                
+                <VideocamIcon onClick={muteCam} />
+                <KeyboardVoiceIcon onClick={muteMic} />
                 <video
                   playsInline
                   muted
