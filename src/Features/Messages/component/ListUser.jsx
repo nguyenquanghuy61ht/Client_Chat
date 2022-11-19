@@ -1,257 +1,227 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useState, useEffect, useRef } from "react";
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import { makeStyles } from "@mui/styles";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import CircleIcon from "@mui/icons-material/Circle";
+import messengerApi from "../../../api/messengerApi";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import QueryString from "qs";
+import SketonUser from "./sketonUser";
+
 const useStyles = makeStyles({
-  root:{
-    width:"100%"
+  root: {
+    width: "100%",
   },
   header: {
     width: "95%",
     zIndex: 10,
   },
   Title: {
-    padding: "0 30px",
-    fontSize: "22px",
-    borderBottom: "1px solid grey",
+    color: "#51C332",
+    padding: "0 28px",
+    fontSize: "18px",
+    borderBottom: "1px solid #51C332",
   },
   List: {
-    height: "600px",
+    height: "440px",
     width: "100%",
     bgcolor: "background.paper",
     padding: "20px",
   },
   ListItem: {
-    padding: "15px 30px !important",
+    width: "100% !important",
+    padding: "10px 3px 10px 27px !important",
   },
   imgUser: {
-    width: "67px !important",
-    height: "67px !important",
+    width: "40px !important",
+    height: "40px !important",
+    borderRadius: "20px",
   },
   NameUser: {
-    padding: "8px 10px 10px 10px",
-    fontSize: "20px !important",
-    fontWeight: "600 !important",
+    padding: "10px 10px 10px 6px",
+    fontSize: "14px !important",
+    fontWeight: "500 !important",
+    color: "white",
   },
+
   status: {
-    fontSize: "15px !important",
+    fontSize: "13px !important",
     color: "#5AD539",
     position: "absolute",
-    right: 5,
+    right: 13,
+    bottom: 0,
+  },
+  ofStatus: {
+    fontSize: "13px !important",
+    color: "#BCC0C4",
+    position: "absolute",
+    right: 13,
     bottom: 0,
   },
   InputFooter: {
-    borderTop: "1px solid grey ",
+    borderTop: "1px solid #51C332 ",
     height: "60px",
     width: "100%",
-  
+    display: "flex",
+    alignItems: "center",
   },
 });
-function ListUser(props) {
+function ListUser({ getUserids }) {
   const classes = useStyles();
+  const search = useParams();
+  // queryParams
+  const queryParams = useMemo(() => {
+    return QueryString.parse(search["*"]);
+  }, [search]);
+
+  const navigate = useNavigate();
+  const online = useSelector((state) => state.mess.online);
   const elementRef = useRef();
+  const [user2, setUser2] = useState(queryParams.user2);
+  const [dataUser, setDataUser] = useState([]);
+  const [User, setUser] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const URL = "http://localhost:8080/";
+
+  const idUser = useSelector((state) => state.user.current);
   const sl = 10;
+
   useEffect(() => {
     if (sl >= 10) {
       elementRef.current.style.overflow = "auto";
     }
   }, [sl]);
+
+  useEffect(() => {
+    (async () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const listData = await messengerApi.user();
+      setUser(
+        listData.data.user.filter(
+          (user) => JSON.stringify(user._id) === JSON.stringify(idUser)
+        )
+      );
+      setDataUser(
+        listData.data.user.filter(
+          (user) => JSON.stringify(user._id) !== JSON.stringify(idUser)
+        )
+      );
+
+      setLoading(false);
+    })();
+  }, [idUser, online]);
+
+  // day len url
+  useEffect(() => {
+    navigate(QueryString.stringify({ user2: user2 }));
+  }, [navigate, user2]);
+  //load tin nhan
+  const handleLoadMess = (userId1, userId2) => {
+    setUser2(userId2);
+  };
+
+  useEffect(() => {
+    const InfoUser2 = dataUser.filter(
+      (user) => JSON.stringify(user._id) === JSON.stringify(user2)
+    );
+    getUserids(idUser, user2, InfoUser2[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user2, dataUser]);
+
+  //
+
   return (
     <Box className={classes.root}>
-      <Box component="Div" className={classes.header}>
+      <Box component="div" className={classes.header}>
         <Box className={classes.Title}>
           <h2>WeChat</h2>
         </Box>
       </Box>
-      <Box>
+      <Box className="listUser">
         <List
           ref={elementRef}
           className={classes.List}
           component="nav"
           aria-labelledby="nested-list-subheader"
         >
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
-          <ListItemButton className={classes.ListItem}>
-            <ListItemIcon sx={{ position: "relative" }}>
-              <Avatar
-                className={classes.imgUser}
-                alt="avartar"
-                src="https://technext.github.io/classimax/images/user/user-thumb.jpg"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
-            <Typography className={classes.NameUser} variant="h3" gutterBottom>
-              Nguyen Huy
-            </Typography>
-          </ListItemButton>
+          {loading ? (
+            <SketonUser length={6} />
+          ) : (
+            dataUser.map((elmUser) => {
+              return (
+                <ListItemButton
+                  className={classes.ListItem}
+                  sx={{
+                    backgroundColor: `${
+                      user2 === elmUser._id ? "#88DB71" : ""
+                    }`,
+                  }}
+                  key={elmUser._id}
+                  onClick={() => handleLoadMess(idUser, elmUser._id)}
+                >
+                  <ListItemIcon sx={{ position: "relative" }}>
+                    <img
+                      src={
+                        elmUser.image.includes("images")
+                          ? URL + elmUser.image
+                          : elmUser.image
+                      }
+                      className={classes.imgUser}
+                      alt="avartar"
+                    />
+                    <CircleIcon
+                      className={
+                        elmUser.status ? classes.status : classes.ofStatus
+                      }
+                    />
+                  </ListItemIcon>
+                  <Typography
+                    className={classes.NameUser}
+                    variant="h3"
+                    gutterBottom
+                  >
+                    {elmUser.name}
+                  </Typography>
+                </ListItemButton>
+              );
+            })
+          )}
         </List>
       </Box>
-      <Box className={classes.InputFooter}>Tai ung dung</Box>
+      <Box className={classes.InputFooter}>
+        {loading ? (
+          <SketonUser />
+        ) : (
+          <>
+            <ListItemIcon
+              sx={{ position: "relative", cursor: "pointer" }}
+              onClick={() => {
+                navigate("/avartar");
+              }}
+            >
+              <img
+                src={
+                  User[0]?.image.includes("images")
+                    ? URL + User[0]?.image
+                    : User[0]?.image
+                }
+                className={classes.imgUser}
+                alt="avartar"
+              />
+              <CircleIcon className={classes.status} />
+            </ListItemIcon>
+            <Typography className={classes.NameUser} variant="h3" gutterBottom>
+              {User[0]?.name}
+            </Typography>
+          </>
+        )}
+      </Box>
     </Box>
   );
 }
