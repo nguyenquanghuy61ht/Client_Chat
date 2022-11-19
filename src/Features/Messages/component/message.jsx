@@ -4,7 +4,13 @@ import Peer from "simple-peer";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@mui/styles";
 import "./index.scss";
-import { Button, ListItemIcon, TextField, Tooltip, Typography } from "@mui/material";
+import {
+  Button,
+  ListItemIcon,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import IconButton from "@material-ui/core/IconButton";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import PhoneIcon from "@material-ui/icons/Phone";
@@ -32,7 +38,10 @@ import DialogContent from "@mui/material/DialogContent";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import SketonMess from "./sketonMess";
 import SketonUser from "./sketonUser";
+import { useNavigate } from "react-router-dom";
 function Message({ userIds, onChange }) {
+  const navigate = useNavigate();
+
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [load, setLoad] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -55,14 +64,12 @@ function Message({ userIds, onChange }) {
   //dialog
   const [open, setOpen] = useState(false);
   //video call
-  const [me, setMe] = useState("");
   const [stream, setStream] = useState();
   const [receivingCall, setReceivingCall] = useState(false);
   const [caller, setCaller] = useState("");
   const [callerSignal, setCallerSignal] = useState();
   const [callAccepted, setCallAccepted] = useState(false);
-  	const [idToCall, setIdToCall] = useState("");
-    const [callEnded, setCallEnded] = useState(false);
+  const [callEnded, setCallEnded] = useState(false);
   const [name, setName] = useState("");
 
   const handleClose = () => {
@@ -325,24 +332,23 @@ function Message({ userIds, onChange }) {
   }, []);
 
   //video logic
-  const myVideo = useRef();
-  const userVideo = useRef();
-  const connectionRef = useRef();
+  let myVideo = useRef();
+  let userVideo = useRef();
+  let connectionRef = useRef();
 
   useEffect(() => {
     const getUserMedia = async () => {
       try {
-       navigator.mediaDevices
-         .getUserMedia({ video: true, audio: true })
-         .then((stream) => {
-           setStream(stream);
-           myVideo.current.srcObject = stream;
-         });
+        navigator.mediaDevices
+          .getUserMedia({ video: true, audio: true })
+          .then((currentStream) => {
+            setStream(currentStream);
+            myVideo.current.srcObject = currentStream;
+          });
 
         // socketRef.current.on("me", (id) => {
         //   setMe(id);
         // });
-
 
         socketRef.current.on("callUser", (data) => {
           console.log(data);
@@ -357,8 +363,6 @@ function Message({ userIds, onChange }) {
     };
     getUserMedia();
   }, []);
- 
-
 
   const callUser = (id) => {
     const peer = new Peer({
@@ -406,9 +410,18 @@ function Message({ userIds, onChange }) {
   };
 
   const leaveCall = () => {
+    socketRef.current.emit("callEnded", { to: caller });
     setCallEnded(true);
     connectionRef.current.destroy();
+    window.location.reload();
   };
+
+  useEffect(() => {
+    socketRef.current.on("callEnded", (data) => {
+      setCallEnded(true);
+      window.location.reload();
+    });
+  }, []);
 
   return (
     <Box component="div" className={classes.rootContent}>
@@ -493,6 +506,7 @@ function Message({ userIds, onChange }) {
           <div className="container">
             <div className="video-container">
               <div className="video">
+                
                 <video
                   playsInline
                   muted
@@ -503,45 +517,19 @@ function Message({ userIds, onChange }) {
               </div>
               <div className="video">
                 {callAccepted && !callEnded ? (
-                  <video
-                    playsInline
-                    ref={userVideo}
-                    autoPlay
-                    style={{ width: "300px" }}
-                  />
+                  <>
+                    <p>nguoi 2</p>
+                    <video
+                      playsInline
+                      ref={userVideo}
+                      autoPlay
+                      style={{ width: "300px" }}
+                    />
+                  </>
                 ) : null}
               </div>
             </div>
             <div className="myId">
-              {/* <TextField
-                id="filled-basic"
-                label="Name"
-                variant="filled"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{ marginBottom: "20px" }}
-              /> */}
-              {/* <CopyToClipboard
-                text={me}
-                style={{ marginBottom: "2rem" }}
-                onCopy={() => alert("Copied")}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<AssignmentIcon fontSize="large" />}
-                >
-                  Copy ID
-                </Button>
-              </CopyToClipboard> */}
-
-              {/* <TextField
-                id="filled-basic"
-                label="ID to call"
-                variant="filled"
-                value={idToCall}
-                onChange={() => setIdToCall(userId2)}
-              /> */}
               <div className="call-button">
                 {callAccepted && !callEnded ? (
                   <Button
@@ -556,7 +544,6 @@ function Message({ userIds, onChange }) {
                     color="primary"
                     aria-label="call"
                     onClick={() => callUser(userId2)}
-                    
                   >
                     <PhoneIcon fontSize="large" />
                   </IconButton>
