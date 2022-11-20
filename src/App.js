@@ -39,14 +39,6 @@ function App() {
             </Protected>
           }
         />
-        <Route
-          path="chat/video"
-          element={
-            <Protected isLoggedIn={isAuth}>
-              <Video/>
-            </Protected>
-          }
-        />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="sendemail" element={<ResetPass />} />

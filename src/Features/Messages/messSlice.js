@@ -3,8 +3,9 @@ import {  createSlice } from "@reduxjs/toolkit";
 const messSlice = createSlice({
   name: "mess",
   initialState: {
-    online:"",
-    ofline:""
+    online: "",
+    ofline: "",
+    userId2: "",
   },
   reducers: {
     Online(state, action) {
@@ -14,6 +15,13 @@ const messSlice = createSlice({
         console.log(error);
       }
     },
+    // setUserId2(state, action) {
+    //   try {
+    //     state.userId2 = action.payload.id;
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // },
   },
 });
 

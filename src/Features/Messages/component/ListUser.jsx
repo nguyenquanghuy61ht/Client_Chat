@@ -9,9 +9,10 @@ import Typography from "@mui/material/Typography";
 import CircleIcon from "@mui/icons-material/Circle";
 import messengerApi from "../../../api/messengerApi";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import QueryString from "qs";
 import SketonUser from "./sketonUser";
+import storageKeys from "../../../constants/storage-keys";
 
 const useStyles = makeStyles({
   root: {
@@ -124,6 +125,7 @@ function ListUser({ getUserids }) {
   //load tin nhan
   const handleLoadMess = (userId1, userId2) => {
     setUser2(userId2);
+
   };
 
   useEffect(() => {
@@ -199,23 +201,23 @@ function ListUser({ getUserids }) {
           <SketonUser />
         ) : (
           <>
-            <ListItemIcon
-              sx={{ position: "relative", cursor: "pointer" }}
-              onClick={() => {
-                navigate("/avartar");
-              }}
-            >
-              <img
-                src={
-                  User[0]?.image.includes("images")
-                    ? URL + User[0]?.image
-                    : User[0]?.image
-                }
-                className={classes.imgUser}
-                alt="avartar"
-              />
-              <CircleIcon className={classes.status} />
-            </ListItemIcon>
+            <Link to="/avartar" target="_blank" rel="noopener noreferrer">
+              <ListItemIcon
+                sx={{ position: "relative", cursor: "pointer" }}
+              >
+                <img
+                  src={
+                    User[0]?.image.includes("images")
+                      ? URL + User[0]?.image
+                      : User[0]?.image
+                  }
+                  className={classes.imgUser}
+                  alt="avartar"
+                />
+                <CircleIcon className={classes.status} />
+              </ListItemIcon>
+            </Link>
+
             <Typography className={classes.NameUser} variant="h3" gutterBottom>
               {User[0]?.name}
             </Typography>

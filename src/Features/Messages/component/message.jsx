@@ -11,11 +11,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import VideocamIcon from "@mui/icons-material/Videocam";
-import KeyboardVoiceIcon from "@mui/icons-material/KeyboardVoice";
-import IconButton from "@material-ui/core/IconButton";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import PhoneIcon from "@material-ui/icons/Phone";
+
 import CircleIcon from "@mui/icons-material/Circle";
 import SendIcon from "@mui/icons-material/Send";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -29,7 +25,7 @@ import storageKeys from "../../../constants/storage-keys";
 import { Online } from "../messSlice";
 import Picker from "emoji-picker-react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-
+import VideocamIcon from "@mui/icons-material/Videocam";
 import { useSnackbar } from "notistack";
 import Delete from "./Delete";
 import "./index.scss";
@@ -39,7 +35,8 @@ import DialogContent from "@mui/material/DialogContent";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import SketonMess from "./sketonMess";
 import SketonUser from "./sketonUser";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Video from "./Video-Call";
 function Message({ userIds, onChange }) {
   const navigate = useNavigate();
 
@@ -64,17 +61,14 @@ function Message({ userIds, onChange }) {
   const [idMess, setIdMess] = useState("");
   //dialog
   const [open, setOpen] = useState(false);
+  const [open2, setOpen2] = useState(false);
+
+
   //video call
-  const [stream, setStream] = useState();
-  const [receivingCall, setReceivingCall] = useState(false);
-  const [caller, setCaller] = useState("");
-  const [callerSignal, setCallerSignal] = useState();
-  const [callAccepted, setCallAccepted] = useState(false);
-  const [callEnded, setCallEnded] = useState(false);
-  const [name, setName] = useState("");
 
   const handleClose = () => {
     setOpen(false);
+    setOpen2(false);
   };
 
   const url = "http://localhost:8080/";
@@ -332,120 +326,32 @@ function Message({ userIds, onChange }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  //video logic
-  let myVideo = useRef();
-  let userVideo = useRef();
-  let connectionRef = useRef();
 
+  const handleOpenVideo = () => {
+    setOpen2(true);
+    // callUser(userId2);
+  };
   useEffect(() => {
-    const getUserMedia = async () => {
-      try {
-        navigator.mediaDevices
-          .getUserMedia({ video: true, audio: true })
-          .then((currentStream) => {
-            setStream(currentStream);
-            myVideo.current.srcObject = currentStream;
-          });
-
-        // socketRef.current.on("me", (id) => {
-        //   setMe(id);
-        // });
-
-        socketRef.current.on("callUser", (data) => {
-          console.log(data);
-          setReceivingCall(true);
-          setCaller(data.from);
-          setName(data.name);
-          setCallerSignal(data.signal);
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    const bat = false;
-    if (bat === true) getUserMedia();
-  }, []);
-
-  const callUser = (id) => {
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream: stream,
-    });
-    peer.on("signal", (data) => {
-      const id1 = localStorage.getItem(storageKeys.USER);
-      socketRef.current.emit("callUser", {
-        userToCall: id,
-        signalData: data,
-        from: JSON.parse(id1),
-        name: "hung",
-      });
-    });
-    peer.on("stream", (stream) => {
-      userVideo.current.srcObject = stream;
-    });
-    socketRef.current.on("callAccepted", (signal) => {
-      setCallAccepted(true);
-      peer.signal(signal);
-    });
-
-    connectionRef.current = peer;
-  };
-
-  const answerCall = () => {
-    setCallAccepted(true);
-    const peer = new Peer({
-      initiator: false,
-      trickle: false,
-      stream: stream,
-    });
-    peer.on("signal", (data) => {
-      console.log(data);
-      socketRef.current.emit("answerCall", { signal: data, to: caller });
-    });
-    peer.on("stream", (stream) => {
-      userVideo.current.srcObject = stream;
-    });
-
-    peer.signal(callerSignal);
-    connectionRef.current = peer;
-  };
-
-  const leaveCall = () => {
-    console.log(caller);
-    socketRef.current.emit("callEnded", { to: userId2 });
-    setCallEnded(true);
-    connectionRef.current.destroy();
-    window.location.reload();
-
-   
-
-  };
-
-  useEffect(() => {
-    socketRef.current.on("callEnded", (data) => {
-      console.log(data);
-
-      setCallEnded(true);
-      connectionRef.current.destroy();
-      window.location.reload();
+    socketRef.current.on("OpenForm", (data) => {
+      setOpen2(true);
     });
   }, []);
-
-  function muteMic() {
-    stream
-      .getAudioTracks()
-      .forEach((track) => (track.enabled = !track.enabled));
-  }
-
-  function muteCam() {
-    stream
-      .getVideoTracks()
-      .forEach((track) => (track.enabled = !track.enabled));
-  }
 
   return (
     <Box component="div" className={classes.rootContent}>
+      <Dialog
+        open={open2}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent
+          className="Dlalog-content"
+          sx={{ backgroundColor: "#2C3230" ,padding:"0"}}
+        >
+          <Video userId2={userId2} socketRef={socketRef} open2={open2} />
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={open}
         onClose={handleClose}
@@ -515,6 +421,8 @@ function Message({ userIds, onChange }) {
           </Box>
         )}
 
+        <VideocamIcon onClick={handleOpenVideo} />
+
         <LogoutIcon className={classes.rightHeader} onClick={handleLogout} />
       </Box>
       {load && (
@@ -522,72 +430,6 @@ function Message({ userIds, onChange }) {
       )}
 
       <Box component="div" className={classes.content} ref={elementContent}>
-        <>
-          <h1 style={{ textAlign: "center", color: "#fff" }}>Zoomish</h1>
-          <div className="container">
-            <div className="video-container">
-              <div className="video">
-                <VideocamIcon onClick={muteCam} />
-                <KeyboardVoiceIcon onClick={muteMic} />
-                <video
-                  playsInline
-                  muted
-                  ref={myVideo}
-                  autoPlay
-                  style={{ width: "300px" }}
-                />
-              </div>
-              <div className="video">
-                {callAccepted && !callEnded ? (
-                  <>
-                    <p>nguoi 2</p>
-                    <video
-                      playsInline
-                      ref={userVideo}
-                      autoPlay
-                      style={{ width: "300px" }}
-                    />
-                  </>
-                ) : null}
-              </div>
-            </div>
-            <div className="myId">
-              <div className="call-button">
-                {callAccepted && !callEnded ? (
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={leaveCall}
-                  >
-                    End Call
-                  </Button>
-                ) : (
-                  <IconButton
-                    color="primary"
-                    aria-label="call"
-                    onClick={() => callUser(userId2)}
-                  >
-                    <PhoneIcon fontSize="large" />
-                  </IconButton>
-                )}
-              </div>
-            </div>
-            <div>
-              {receivingCall && !callAccepted ? (
-                <div className="caller">
-                  <h1>{name} is calling...</h1>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={answerCall}
-                  >
-                    Answer
-                  </Button>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </>
         {loading ? (
           <SketonMess length={5} />
         ) : (
