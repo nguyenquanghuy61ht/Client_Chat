@@ -37,6 +37,7 @@ import SketonMess from "./sketonMess";
 import SketonUser from "./sketonUser";
 import { Link, useNavigate } from "react-router-dom";
 import Video from "./Video-Call";
+import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 function Message({ userIds, onChange }) {
   const navigate = useNavigate();
 
@@ -347,7 +348,7 @@ function Message({ userIds, onChange }) {
       >
         <DialogContent
           className="Dlalog-content"
-          sx={{ backgroundColor: "#2C3230" ,padding:"0"}}
+          sx={{ backgroundColor: "#2C3230", padding: "0" }}
         >
           <Video userId2={userId2} socketRef={socketRef} open2={open2} />
         </DialogContent>
@@ -420,10 +421,16 @@ function Message({ userIds, onChange }) {
             </Typography>
           </Box>
         )}
+        <Box className={classes.controlerCamera}>
+          {userId2 && (
+            <VideocamOutlinedIcon
+              onClick={handleOpenVideo}
+              className="icon-video-call"
+            />
+          )}
 
-        <VideocamIcon onClick={handleOpenVideo} />
-
-        <LogoutIcon className={classes.rightHeader} onClick={handleLogout} />
+          <LogoutIcon className={classes.rightHeader} onClick={handleLogout} />
+        </Box>
       </Box>
       {load && (
         <Box component="div" className={classes.contentBackGround}></Box>
@@ -637,8 +644,9 @@ const useStyles = makeStyles({
     paddingLeft: "14px",
   },
   contentBackGround: {
+    zIndex: 20,
     width: "100%",
-    height: "520px",
+    height: "750px",
     backgroundImage:
       "url('https://media.giphy.com/media/A608loAlQgF4ag7k4m/giphy.gif')",
     backgroundRepeat: "no-repeat",
@@ -735,5 +743,9 @@ const useStyles = makeStyles({
     width: "80px",
     borderRadius: "0.5rem",
     padding: "0 10px",
+  },
+  controlerCamera:{
+    display:"flex",
+    alignItems:"center"
   },
 });

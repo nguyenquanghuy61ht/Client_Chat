@@ -11,7 +11,8 @@
       position: absolute;
       bottom: 14px;
       right: 20%;
-      font-size: 30px;
+      font-size: 26px;
+      cursor: pointer;
     }
   }
   .video_user2 {
@@ -23,5 +24,11 @@
   margin-right: 35px;
 }
 .video {
+  padding: 10px;
+  margin: auto;
+}
+.controller{
+  display: flex;
+  justify-content: center;
   padding: 10px;
 }
