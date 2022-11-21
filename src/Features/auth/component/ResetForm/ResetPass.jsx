@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import React from "react";
 import { makeStyles } from "@mui/styles";
 import BoxForm from "../BoxForm";
@@ -6,7 +5,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import InputFiled from "../inputFiled/inputFiled";
-import InputPass from "../inputFiled/inputPass";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSnackbar } from "notistack";
+import userApi from "../../../../api/userApi";
 
 // tạo schema để validate
 const schema = yup.object().shape({
@@ -14,7 +16,6 @@ const schema = yup.object().shape({
     .string()
     .email("email không hợp lệ")
     .required("Email là bắt buộc!"),
-  password: yup.string().required("Mật khẩu là bắt buộc").min(8).max(32),
 });
 const useStyles = makeStyles({
   fontTitle: {
@@ -39,8 +40,10 @@ const useStyles = makeStyles({
     transition: "250ms background ease",
   },
 });
+
 function ResetPass(props) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     register,
@@ -50,25 +53,30 @@ function ResetPass(props) {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const onSubmitHandler = (data) => {
-    console.log({ data });
-    reset();
+  const onSubmitHandler =async (data) => {
+    try {
+      const resultAction = await userApi.senderMail(data);
+      if(resultAction.status===200){
+        enqueueSnackbar("Chúng tôi đã gửi đến hộp thư của bạn đường link để thay đổi mk vui lòng kiểm tra .", { variant: "success" });
+        reset()
+      }
+    } catch (error) {
+      enqueueSnackbar("email không tồn tại", { variant: "error" });
+    }
+
   };
 
   return (
     <BoxForm>
       <form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
-        <h2 className={classes.fontTitle}>Nhập Email của bạn</h2>
+        <h3 className={classes.fontTitle}>Nhập Email của bạn</h3>
         <br />
-
         <InputFiled register={register} name="email" nameError={errors.email} />
         <br />
-
-        <button className={classes.submit} type="Đăng nhập">
+        <button className={classes.submit} type="submit">
           Gửi
         </button>
       </form>
-
     </BoxForm>
   );
 }

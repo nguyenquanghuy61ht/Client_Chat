@@ -11,6 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import PhoneIcon from "@material-ui/icons/Phone";
 
 import messengerApi from "../../../../api/messengerApi";
+import { useDispatch } from "react-redux";
 
 function Video({ userId2, socketRef, open2 }) {
   const [stream, setStream] = useState();
@@ -141,7 +142,7 @@ function Video({ userId2, socketRef, open2 }) {
       connectionRef.current.destroy();
       window.location.reload();
     });
-  }, []);
+  }, [socketRef]);
 
   useEffect(() => {
     (async () => {
@@ -235,18 +236,21 @@ function Video({ userId2, socketRef, open2 }) {
             ) : !receivingCall && showPhone ? (
               <>
                 <IconButton
-                  color="primary"
                   aria-label="call"
-                  onClick={() => {
-                    setTextCalling(`Đang gọi cho ${name}.....`);
-                    socketRef.current.emit("OpenForm", {
+                  onClick={async () => {
+                    const id1 = localStorage.getItem(storageKeys.USER);
+                    await socketRef.current.emit("OpenForm", {
+                      from: JSON.parse(id1),
                       to: userId2,
                     });
-                    callUser(userId2);
+                    socketRef.current.on("Callingnow", (data) => {
+                      callUser(data.from);
+                    });
+                    setTextCalling(`Đang gọi cho ${name}.....`);
                     setshowPhone(false);
                   }}
                 >
-                  <PhoneIcon fontSize="large" />
+                  <PhoneIcon fontSize="large" style={{ color: "#51C332" }} />
                 </IconButton>
               </>
             ) : (

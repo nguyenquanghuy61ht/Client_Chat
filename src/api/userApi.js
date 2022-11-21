@@ -11,6 +11,14 @@ const userApi = {
     const url = "/auth/login";
     return axiosClient.post(url, data);
   },
+  senderMail(data) {
+    const url = "/auth/reset";
+    return axiosClient.post(url, data);
+  },
+  changePassWord(data) {
+    const url = "/auth/new-password";
+    return axiosClient.post(url, data);
+  },
   status(data) {
     const url = "/auth/status";
     return axiosClient.put(url, data);

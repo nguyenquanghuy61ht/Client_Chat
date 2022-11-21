@@ -90,7 +90,7 @@ function Login(props) {
         />
         <br />
 
-        <button className={classes.submit} type="Đăng nhập">
+        <button className={classes.submit} type="submit">
           Đăng nhập
         </button>
       </form>

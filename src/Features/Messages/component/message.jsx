@@ -64,12 +64,13 @@ function Message({ userIds, onChange }) {
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
 
-
   //video call
 
-  const handleClose = () => {
-    setOpen(false);
-    setOpen2(false);
+  const handleClose = (event, reason) => {
+    if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
+      setOpen(false);
+      setOpen2(false);
+    }
   };
 
   const url = "http://localhost:8080/";
@@ -327,15 +328,25 @@ function Message({ userIds, onChange }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   const handleOpenVideo = () => {
     setOpen2(true);
     // callUser(userId2);
   };
+  const timer = useRef(null);
   useEffect(() => {
     socketRef.current.on("OpenForm", (data) => {
       setOpen2(true);
+      timer.current = setTimeout(() => {
+        socketRef.current.emit("Callingnow", {
+          from: data.to,
+          to: data.from,
+        });
+      }, 1000);
     });
+
+    return () => {
+      clearTimeout(timer.current);
+    };
   }, []);
 
   return (
@@ -744,8 +755,8 @@ const useStyles = makeStyles({
     borderRadius: "0.5rem",
     padding: "0 10px",
   },
-  controlerCamera:{
-    display:"flex",
-    alignItems:"center"
+  controlerCamera: {
+    display: "flex",
+    alignItems: "center",
   },
 });

@@ -4,8 +4,7 @@ const messSlice = createSlice({
   name: "mess",
   initialState: {
     online: "",
-    ofline: "",
-    userId2: "",
+    ofline: ""
   },
   reducers: {
     Online(state, action) {
@@ -15,6 +14,8 @@ const messSlice = createSlice({
         console.log(error);
       }
     },
+
+   
     // setUserId2(state, action) {
     //   try {
     //     state.userId2 = action.payload.id;
@@ -26,5 +27,5 @@ const messSlice = createSlice({
 });
 
 const { actions, reducer } = messSlice;
-export const { Online } = actions;
+export const { Online, Calluser } = actions;
 export default reducer; //default export

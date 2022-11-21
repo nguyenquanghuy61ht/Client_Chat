@@ -41,8 +41,8 @@ function App() {
         />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="sendemail" element={<ResetPass />} />
-        <Route path="reset" element={<FormNewPass />} />
+        <Route path="sendermail" element={<ResetPass />} />
+        <Route path="reset/*" element={<FormNewPass />} />
       </Routes>
     </div>
   );

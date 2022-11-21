@@ -47,7 +47,6 @@ function InputFiled({ register, name, nameError }) {
     }
   }, [nameError]);
 
-  console.log(showErr);
   return (
     <div className={classes.root}>
       <input

@@ -1,5 +1,4 @@
-import { Box } from "@mui/material";
-import React from "react";
+import React, { useMemo } from "react";
 import { makeStyles } from "@mui/styles";
 import BoxForm from "../BoxForm";
 import { useForm } from "react-hook-form";
@@ -7,15 +6,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import InputFiled from "../inputFiled/inputFiled";
 import InputPass from "../inputFiled/inputPass";
+import { useNavigate, useParams } from "react-router-dom";
+import userApi from "../../../../api/userApi";
+import { useSnackbar } from "notistack";
 
 // tạo schema để validate
 const schema = yup.object().shape({
-  name: yup.string().required("Tên là bắt buộc!"),
-  email: yup
-    .string()
-    .email("email không hợp lệ")
-    .required("Email là bắt buộc!"),
   password: yup.string().required("Mật khẩu là bắt buộc").min(8).max(32),
+  confirmPwd: yup
+    .string()
+    .required("Nhập lại mật khẩu là bắt buộc")
+    .oneOf([yup.ref("password")], "Mật khẩu không khớp"),
 });
 const useStyles = makeStyles({
   fontTitle: {
@@ -42,7 +43,8 @@ const useStyles = makeStyles({
 });
 function FormNewPass(props) {
   const classes = useStyles();
-
+  let navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const {
     register,
     handleSubmit,
@@ -51,27 +53,47 @@ function FormNewPass(props) {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const onSubmitHandler = (data) => {
-    console.log({ data });
-    reset();
+  const search = useParams();
+
+  const queryParams = useMemo(() => {
+    return search["*"];
+  }, [search]);
+  const onSubmitHandler = async (data) => {
+    let newData = { ...data };
+    newData = {
+      ...newData,
+      passwordToken: queryParams.split("/")[0],
+      userId: queryParams.split("/")[1],
+    };
+    try {
+      const resultAction = await userApi.changePassWord(newData);
+      if (resultAction.status === 200) {
+        enqueueSnackbar("Thay đổi mật khẩu thành công.", {
+          variant: "success",
+        });
+        navigate("/login");
+        reset();
+      }
+    } catch (error) {
+      enqueueSnackbar("Thay đổi mật khẩu thất bại", { variant: "error" });
+    }
   };
 
   return (
     <BoxForm>
       <form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
         <h2 className={classes.fontTitle}>Đặt lại mật khẩu</h2>
-        <br />
         <InputPass
           register={register}
           name="password"
           nameError={errors.password}
         />
-        <br />
+
         <InputPass
           register={register}
-          name="password"
-          nameError={errors.password}
+          name="confirmPwd"
           confirm="confirm"
+          nameError={errors.confirmPwd}
           lable="Nhập lại mật khẩu"
         />
         <br />

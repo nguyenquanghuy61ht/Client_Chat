@@ -125,7 +125,6 @@ function ListUser({ getUserids }) {
   //load tin nhan
   const handleLoadMess = (userId1, userId2) => {
     setUser2(userId2);
-
   };
 
   useEffect(() => {
@@ -141,7 +140,9 @@ function ListUser({ getUserids }) {
   return (
     <Box className={classes.root}>
       <Box component="div" className={classes.header}>
-        <Box className={classes.Title}>
+        <Box
+          className={classes.Title}
+        >
           <h2>WeChat</h2>
         </Box>
       </Box>
@@ -202,9 +203,7 @@ function ListUser({ getUserids }) {
         ) : (
           <>
             <Link to="/avartar" target="_blank" rel="noopener noreferrer">
-              <ListItemIcon
-                sx={{ position: "relative", cursor: "pointer" }}
-              >
+              <ListItemIcon sx={{ position: "relative", cursor: "pointer" }}>
                 <img
                   src={
                     User[0]?.image.includes("images")
