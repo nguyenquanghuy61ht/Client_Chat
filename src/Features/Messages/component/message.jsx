@@ -1,13 +1,11 @@
 import React from "react";
 import { useEffect, useRef } from "react";
-import Peer from "simple-peer";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@mui/styles";
 import "./index.scss";
 import {
   Button,
   ListItemIcon,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -25,7 +23,6 @@ import storageKeys from "../../../constants/storage-keys";
 import { Online } from "../messSlice";
 import Picker from "emoji-picker-react";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import VideocamIcon from "@mui/icons-material/Videocam";
 import { useSnackbar } from "notistack";
 import Delete from "./Delete";
 import "./index.scss";
@@ -35,11 +32,9 @@ import DialogContent from "@mui/material/DialogContent";
 import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import SketonMess from "./sketonMess";
 import SketonUser from "./sketonUser";
-import { Link, useNavigate } from "react-router-dom";
 import Video from "./Video-Call";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 function Message({ userIds, onChange }) {
-  const navigate = useNavigate();
 
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [load, setLoad] = useState(true);
@@ -83,7 +78,6 @@ function Message({ userIds, onChange }) {
           setUser2(user.data.user);
         }
       } catch (error) {
-        console.log(error);
         enqueueSnackbar(error.message, { variant: "error" });
       }
     })();
@@ -178,7 +172,6 @@ function Message({ userIds, onChange }) {
 
   const handleKeyPress = async (event) => {
     if (event.key === "Enter") {
-      console.log("hihi");
       //Nếu User chưa bấm vào thì không thể gửi được
       if (!userId2 && value === "") {
         return;
@@ -241,7 +234,6 @@ function Message({ userIds, onChange }) {
   useEffect(() => {
     if (socketRef.current) {
       socketRef.current.on("msg-recieve", (data) => {
-        console.log(data);
         setArrivalMessage({
           fromSelf: false,
           message: data.msg,

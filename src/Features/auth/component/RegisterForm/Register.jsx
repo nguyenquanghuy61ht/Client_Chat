@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { unwrapResult } from "@reduxjs/toolkit";
@@ -86,8 +85,7 @@ function Register(props) {
       const user = unwrapResult(resultAction);
       enqueueSnackbar("Đăng ký thành công!!", { variant: "success" });
       reset();
-      //do somthinh here on
-      // console.log("new user", user);
+ 
     } catch (error) {
       enqueueSnackbar("email đã tồn tại", { variant: "error" });
     }

@@ -12,10 +12,8 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import QueryString from "qs";
 import SketonUser from "./sketonUser";
-import storageKeys from "../../../constants/storage-keys";
 import "./index.scss";
 import { CircularProgress } from "@mui/material";
-import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 const useStyles = makeStyles({
   root: {
@@ -150,7 +148,6 @@ function ListUser({ getUserids }) {
     );
 
     setLoading(false);
-    console.log(users);
   };
 
   const handleChange = (e) => {
@@ -202,7 +199,7 @@ function ListUser({ getUserids }) {
       </Box>
       <Box className="listUser">
         <form
-          noValidate
+          autocomplete="off"
           className="form-Search"
           style={{ position: "relative", width: "50%" }}
         >
@@ -224,7 +221,6 @@ function ListUser({ getUserids }) {
           )}
           <SearchRoundedIcon className={classes.iconsearch} />
         </form>
-      
 
         <List
           ref={elementRef}

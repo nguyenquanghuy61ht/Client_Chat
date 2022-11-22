@@ -4,7 +4,6 @@ import BoxForm from "../BoxForm";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import InputFiled from "../inputFiled/inputFiled";
 import InputPass from "../inputFiled/inputPass";
 import { useNavigate, useParams } from "react-router-dom";
 import userApi from "../../../../api/userApi";

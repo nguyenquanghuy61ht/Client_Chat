@@ -1,6 +1,5 @@
 import React from "react";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
-import { Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({

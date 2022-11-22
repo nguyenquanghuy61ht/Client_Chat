@@ -15,14 +15,6 @@ const messSlice = createSlice({
       }
     },
 
-   
-    // setUserId2(state, action) {
-    //   try {
-    //     state.userId2 = action.payload.id;
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // },
   },
 });
 

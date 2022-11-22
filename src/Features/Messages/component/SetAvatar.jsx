@@ -1,10 +1,9 @@
 import { Box, Button, Typography } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import BoxForm from "../../auth/component/BoxForm";
 import { makeStyles } from "@mui/styles";
 import storageKeys from "../../../constants/storage-keys";
 import { useSnackbar } from "notistack";
-import userApi from "../../../api/userApi";
 import { useNavigate } from "react-router-dom";
 import messengerApi from "../../../api/messengerApi";
 
@@ -71,7 +70,6 @@ function SetAvatar(props) {
       try {
         const currentUserid = localStorage.getItem(storageKeys.USER);
         const user = await messengerApi.getUser(JSON.parse(currentUserid));
-        console.log(user);
         setAvatar(user.data.user);
       } catch (error) {
         enqueueSnackbar(error.message, { variant: "error" });

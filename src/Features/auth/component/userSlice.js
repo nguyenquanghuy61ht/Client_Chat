@@ -1,12 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Navigate } from "react-router-dom";
 
 import userApi from "../../../api/userApi";
 import storageKeys from "../../../constants/storage-keys";
 export const signup = createAsyncThunk("user/signup", async (payload) => {
   //call Api to signup
   const data = await userApi.signup(payload);
-  console.log(data);
   return data.data.userId;
 });
 export const login = createAsyncThunk("user/login", async (payload) => {

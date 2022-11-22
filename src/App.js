@@ -7,7 +7,6 @@ import FormNewPass from "./Features/auth/component/ResetForm/FormNewPass";
 import { useSelector } from "react-redux";
 import Protected from "./middleware/is-auth";
 import SetAvatar from "./Features/Messages/component/SetAvatar";
-import Video from "./Features/Messages/component/Video-Call";
 function App() {
   const loggedInUser = useSelector((state) => state.user.current);
   let isAuth;

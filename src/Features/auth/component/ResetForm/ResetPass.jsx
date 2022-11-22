@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import InputFiled from "../inputFiled/inputFiled";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import userApi from "../../../../api/userApi";
 

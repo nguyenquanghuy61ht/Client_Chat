@@ -77,6 +77,9 @@ function Login(props) {
       const resultAction = await dispatch(action);
       const user = unwrapResult(resultAction);
       if (resultAction.type === "user/login/fulfilled") {
+         enqueueSnackbar("Chào mừng bạn đến với WeChat", {
+           variant: "success",
+         });
         return navigate("/chat");
       }
     } catch (error) {
