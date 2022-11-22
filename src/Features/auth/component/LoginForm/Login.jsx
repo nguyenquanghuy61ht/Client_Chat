@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import BoxForm from "../BoxForm";
 import { useForm } from "react-hook-form";
@@ -34,7 +34,7 @@ const useStyles = makeStyles({
     display: "block",
     margin: "20px auto",
     textAlign: "center",
-    padding: "15px 40px",
+    padding: "10px 30px",
     outline: "none",
     color: "white",
     borderRadius: "25px",
@@ -43,6 +43,18 @@ const useStyles = makeStyles({
     fontWeight: "200",
     transition: "250ms background ease",
   },
+  linkSpan:{
+    textDecoration:"none",
+    color:"red",
+  },
+  option:{
+    color:"white",
+    fontSize:"15px"
+  },
+  logo:{
+    width:"60px",
+    height:"60px"
+  }
 });
 function Login(props) {
   const classes = useStyles();
@@ -73,6 +85,13 @@ function Login(props) {
   }
   return (
     <BoxForm>
+      <div className={classes.logo}>
+        <img
+          style={{width:"100%"}}
+          src="https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/371_Wechat_logo-512.png"
+          alt="logo"
+        />
+      </div>
       {isSubmitting && (
         <Stack sx={{ color: "grey.500" }} direction="row">
           <CircularProgress color="secondary" />
@@ -80,7 +99,7 @@ function Login(props) {
       )}
       <form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
         <h2 className={classes.fontTitle}>Đăng nhập</h2>
-        <br />
+
         <InputFiled register={register} name="email" nameError={errors.email} />
 
         <InputPass
@@ -88,11 +107,21 @@ function Login(props) {
           name="password"
           nameError={errors.password}
         />
-        <br />
 
         <button className={classes.submit} type="submit">
           Đăng nhập
         </button>
+        <p className={classes.option}>
+          Bạn quên mật khẩu ?{" "}
+          <Link to="/sendermail" className={classes.linkSpan}>
+            lấy lại mật khẩu
+          </Link>
+        </p>
+        <p className={classes.option}>
+          <Link to="/register" className={classes.linkSpan}>
+            Đăng ký
+          </Link>
+        </p>
       </form>
     </BoxForm>
   );

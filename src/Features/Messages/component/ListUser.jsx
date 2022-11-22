@@ -13,7 +13,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import QueryString from "qs";
 import SketonUser from "./sketonUser";
 import storageKeys from "../../../constants/storage-keys";
-
+import "./index.scss";
+import { CircularProgress } from "@mui/material";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -29,7 +32,7 @@ const useStyles = makeStyles({
     borderBottom: "1px solid #51C332",
   },
   List: {
-    height: "440px",
+    height: "420px",
     width: "100%",
     bgcolor: "background.paper",
     padding: "20px",
@@ -71,6 +74,24 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
   },
+  searchInput: {
+    marginTop: "3px",
+    boxSizing: "border-box",
+    outline: "none",
+    padding: "5px 27px",
+  },
+  icon: {
+    position: "absolute",
+    right: 6,
+    top: 8,
+    color: "grey",
+  },
+  iconsearch: {
+    position: "absolute",
+    left: 3,
+    top: 6,
+    color: "#3D8E22",
+  },
 });
 function ListUser({ getUserids }) {
   const classes = useStyles();
@@ -87,6 +108,8 @@ function ListUser({ getUserids }) {
   const [dataUser, setDataUser] = useState([]);
   const [User, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [change, setChange] = useState("");
+  const [loadUser, setLoadUser] = useState(false);
 
   const URL = "http://localhost:8080/";
 
@@ -117,6 +140,39 @@ function ListUser({ getUserids }) {
       setLoading(false);
     })();
   }, [idUser, online]);
+  //search user
+  const onSubmit = async (value) => {
+    const users = await messengerApi.searchUser(value);
+    setDataUser(
+      users.data.user.filter(
+        (user) => JSON.stringify(user._id) !== JSON.stringify(idUser)
+      )
+    );
+
+    setLoading(false);
+    console.log(users);
+  };
+
+  const handleChange = (e) => {
+    setChange(e.target.value);
+    setLoadUser(true);
+  };
+  const Timeout = useRef(null);
+  useEffect(() => {
+    if (change !== "") {
+      Timeout.current = setTimeout(() => {
+        onSubmit({ keyword: change });
+        setLoadUser(false);
+      }, 400);
+    } else {
+      onSubmit({ keyword: "empty" });
+      setLoadUser(false);
+    }
+
+    return () => {
+      clearTimeout(Timeout.current);
+    };
+  }, [change]);
 
   // day len url
   useEffect(() => {
@@ -140,13 +196,36 @@ function ListUser({ getUserids }) {
   return (
     <Box className={classes.root}>
       <Box component="div" className={classes.header}>
-        <Box
-          className={classes.Title}
-        >
+        <Box className={classes.Title}>
           <h2>WeChat</h2>
         </Box>
       </Box>
       <Box className="listUser">
+        <form
+          noValidate
+          className="form-Search"
+          style={{ position: "relative", width: "50%" }}
+        >
+          <input
+            className={classes.searchInput}
+            id="input-search"
+            type="text"
+            name="text"
+            onChange={handleChange}
+            value={change}
+            placeholder="Nhập tên..."
+          />
+          {loadUser && (
+            <CircularProgress
+              size="18px"
+              color="inherit"
+              className={classes.icon}
+            />
+          )}
+          <SearchRoundedIcon className={classes.iconsearch} />
+        </form>
+      
+
         <List
           ref={elementRef}
           className={classes.List}

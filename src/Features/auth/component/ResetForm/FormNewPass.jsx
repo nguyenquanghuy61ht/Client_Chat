@@ -31,7 +31,7 @@ const useStyles = makeStyles({
     display: "block",
     margin: "20px auto",
     textAlign: "center",
-    padding: "15px 40px",
+    padding: "10px 30px",
     outline: "none",
     color: "white",
     borderRadius: "25px",
@@ -39,6 +39,10 @@ const useStyles = makeStyles({
     textTransform: "uppercase",
     fontWeight: "200",
     transition: "250ms background ease",
+  },
+  logo: {
+    width: "60px",
+    height: "60px",
   },
 });
 function FormNewPass(props) {
@@ -81,6 +85,13 @@ function FormNewPass(props) {
 
   return (
     <BoxForm>
+      <div className={classes.logo}>
+        <img
+          style={{ width: "100%" }}
+          src="https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/371_Wechat_logo-512.png"
+          alt="logo"
+        />
+      </div>
       <form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
         <h2 className={classes.fontTitle}>Đặt lại mật khẩu</h2>
         <InputPass
@@ -96,8 +107,6 @@ function FormNewPass(props) {
           nameError={errors.confirmPwd}
           lable="Nhập lại mật khẩu"
         />
-        <br />
-
         <button className={classes.submit} type="submit">
           Xác nhận
         </button>

@@ -9,6 +9,10 @@ const messengerApi = {
     const url = `/messenger/getuser/${id}`;
     return axiosClient.get(url);
   },
+  searchUser(query) {
+    const url = `/messenger/search/user/${query.keyword}`;
+    return axiosClient.get(url);
+  },
   getAllMessage(query) {
     const url = "/messenger/messages";
     return axiosClient.post(url, query);

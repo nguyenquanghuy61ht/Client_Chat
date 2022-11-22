@@ -13,6 +13,7 @@ import InputFiled from "../inputFiled/inputFiled";
 import InputPass from "../inputFiled/inputPass";
 import Stack from "@mui/material/Stack";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Link } from "react-router-dom";
 // tạo schema để validate
 const schema = yup.object().shape({
   name: yup.string().required("Tên là bắt buộc!"),
@@ -39,7 +40,7 @@ const useStyles = makeStyles({
     display: "block",
     margin: "20px auto",
     textAlign: "center",
-    padding: "15px 40px",
+    padding: "10px 30px",
     outline: "none",
     color: "white",
     borderRadius: "25px",
@@ -47,6 +48,18 @@ const useStyles = makeStyles({
     textTransform: "uppercase",
     fontWeight: "200",
     transition: "250ms background ease",
+  },
+  linkSpan: {
+    textDecoration: "none",
+    color: "red",
+  },
+  option: {
+    color: "white",
+    fontSize: "15px",
+  },
+  logo: {
+    width: "60px",
+    height: "60px",
   },
 });
 function Register(props) {
@@ -86,20 +99,26 @@ function Register(props) {
           <CircularProgress color="secondary" />
         </Stack>
       )}
+      <div className={classes.logo}>
+        <img
+          style={{ width: "100%" }}
+          src="https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/371_Wechat_logo-512.png"
+          alt="logo"
+        />
+      </div>
       <form onSubmit={handleSubmit(onSubmitHandler)} noValidate>
         <h2 className={classes.fontTitle}>Đăng ký</h2>
-        <br />
 
         <InputFiled register={register} name="name" nameError={errors.name} />
 
         <InputFiled register={register} name="email" nameError={errors.email} />
-       
+
         <InputPass
           register={register}
           name="password"
           nameError={errors.password}
         />
-       
+
         <InputPass
           register={register}
           name="confirmPwd"
@@ -107,11 +126,17 @@ function Register(props) {
           nameError={errors.confirmPwd}
           lable="Nhập lại mật khẩu"
         />
-        <br />
 
         <button className={classes.submit} type="submit">
           Đăng ký
         </button>
+        <p className={classes.option}>
+          Bạn đã có tài khoản?
+          <Link to="/login" className={classes.linkSpan}>
+            {" "}
+            Đăng nhập
+          </Link>
+        </p>
       </form>
     </BoxForm>
   );
