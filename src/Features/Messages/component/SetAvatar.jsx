@@ -6,6 +6,7 @@ import storageKeys from "../../../constants/storage-keys";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import messengerApi from "../../../api/messengerApi";
+import { STATIC_HOST } from "../../../constants";
 
 const useStyles = makeStyles({
   root: {
@@ -63,7 +64,7 @@ function SetAvatar(props) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [selectedFile, setSelectedFile] = useState(null);
   const [avatar, setAvatar] = useState("");
-  const url = "http://localhost:8080/";
+ 
 
   useEffect(() => {
     (async () => {
@@ -131,7 +132,7 @@ function SetAvatar(props) {
             src={
               avatar?.preview ||
               (avatar?.image?.includes("images")
-                ? url + avatar.image
+                ? STATIC_HOST + avatar.image
                 : avatar?.image)
             }
             alt="imgUser"

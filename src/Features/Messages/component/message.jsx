@@ -3,12 +3,7 @@ import { useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@mui/styles";
 import "./index.scss";
-import {
-  Button,
-  ListItemIcon,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Button, ListItemIcon, Tooltip, Typography } from "@mui/material";
 
 import CircleIcon from "@mui/icons-material/Circle";
 import SendIcon from "@mui/icons-material/Send";
@@ -34,8 +29,8 @@ import SketonMess from "./sketonMess";
 import SketonUser from "./sketonUser";
 import Video from "./Video-Call";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
+import { STATIC_HOST } from "../../../constants";
 function Message({ userIds, onChange }) {
-
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [load, setLoad] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -68,7 +63,7 @@ function Message({ userIds, onChange }) {
     }
   };
 
-  const url = "http://localhost:8080/";
+ 
 
   useEffect(() => {
     (async () => {
@@ -95,7 +90,7 @@ function Message({ userIds, onChange }) {
   //ket moi voi socket
   const socketRef = useRef();
   useEffect(() => {
-    socketRef.current = io("http://localhost:8080");
+    socketRef.current = io(STATIC_HOST);
     return () => {
       socketRef.current.disconnect();
     };
@@ -408,7 +403,7 @@ function Message({ userIds, onChange }) {
               <img
                 src={
                   user2?.image.includes("images")
-                    ? url + user2?.image
+                    ? STATIC_HOST + user2?.image
                     : user2?.image
                 }
                 className={classes.imgUser}
@@ -460,7 +455,7 @@ function Message({ userIds, onChange }) {
                         <img
                           src={
                             user2?.image.includes("images")
-                              ? url + user2?.image
+                              ? STATIC_HOST + user2?.image
                               : user2?.image
                           }
                           className={classes.imgAvartar}
@@ -651,9 +646,10 @@ const useStyles = makeStyles({
     width: "100%",
     height: "750px",
     backgroundImage:
-      "url('https://media.giphy.com/media/A608loAlQgF4ag7k4m/giphy.gif')",
+      "url('https://www.insegment.com/blog/wp-content/uploads/2020/11/chatbot-marketing.gif')",
     backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
+    //backgroundSize: "cover",
+    backgroundPosition: "center top",
   },
   messenger: { padding: "20px 10px", display: "flex" },
   avartar: { marginRight: "10px" },

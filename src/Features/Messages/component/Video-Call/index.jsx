@@ -173,6 +173,7 @@ function Video({ userId2, socketRef, open2 }) {
           color: "#51C332",
           marginBottom: 0,
           marginRight: "17px",
+          textShadow: "1px 2px 3px grey",
         }}
       >
         WeChat

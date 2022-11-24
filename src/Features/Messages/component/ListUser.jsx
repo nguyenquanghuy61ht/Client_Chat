@@ -15,6 +15,7 @@ import SketonUser from "./sketonUser";
 import "./index.scss";
 import { CircularProgress } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import { STATIC_HOST } from "../../../constants";
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -28,6 +29,7 @@ const useStyles = makeStyles({
     padding: "0 28px",
     fontSize: "18px",
     borderBottom: "1px solid #51C332",
+     textShadow: "1px 2px 3px grey"
   },
   List: {
     height: "420px",
@@ -109,7 +111,7 @@ function ListUser({ getUserids }) {
   const [change, setChange] = useState("");
   const [loadUser, setLoadUser] = useState(false);
 
-  const URL = "http://localhost:8080/";
+  
 
   const idUser = useSelector((state) => state.user.current);
   const sl = 10;
@@ -171,7 +173,7 @@ function ListUser({ getUserids }) {
     };
   }, [change]);
 
-  // day len url
+  // day len STATIC_HOST
   useEffect(() => {
     navigate(QueryString.stringify({ user2: user2 }));
   }, [navigate, user2]);
@@ -199,7 +201,7 @@ function ListUser({ getUserids }) {
       </Box>
       <Box className="listUser">
         <form
-          autocomplete="off"
+          autoComplete="off"
           className="form-Search"
           style={{ position: "relative", width: "50%" }}
         >
@@ -247,7 +249,7 @@ function ListUser({ getUserids }) {
                     <img
                       src={
                         elmUser.image.includes("images")
-                          ? URL + elmUser.image
+                          ? STATIC_HOST + elmUser.image
                           : elmUser.image
                       }
                       className={classes.imgUser}
@@ -282,7 +284,7 @@ function ListUser({ getUserids }) {
                 <img
                   src={
                     User[0]?.image.includes("images")
-                      ? URL + User[0]?.image
+                      ? STATIC_HOST + User[0]?.image
                       : User[0]?.image
                   }
                   className={classes.imgUser}

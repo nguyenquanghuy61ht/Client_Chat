@@ -1,6 +1,7 @@
 import axios from "axios";
+import { STATIC_HOST } from "../constants/common";
 const axiosClient = axios.create({
-  baseURL: "http://localhost:8080/",
+  baseURL: STATIC_HOST,
   headers: {
     "Content-Type": "application/json",
   },
