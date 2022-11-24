@@ -1,1 +1,1 @@
-export const STATIC_HOST = "http://localhost:8080/";
+export const STATIC_HOST = "https://node-app-mesenger.herokuapp.com/";
