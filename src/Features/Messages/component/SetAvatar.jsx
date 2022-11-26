@@ -102,7 +102,7 @@ function SetAvatar(props) {
     }
     const formData = new FormData();
     formData.append("image", selectedFile);
-    fetch(`http://localhost:8080/auth/avatar/${JSON.parse(userId)}`, {
+    fetch(`${STATIC_HOST}auth/avatar/${JSON.parse(userId)}`, {
       method: "PUT",
       body: formData,
       headers: {
