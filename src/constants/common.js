@@ -1,1 +1,1 @@
-export const STATIC_HOST = "https://node-app-mesenger.herokuapp.com/";
+export const STATIC_HOST = "https://server-chat-xwxi.onrender.com/";
