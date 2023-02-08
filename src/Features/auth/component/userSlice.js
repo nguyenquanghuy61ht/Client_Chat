@@ -32,6 +32,8 @@ const userSlice = createSlice({
           .then((result) => {
             localStorage.removeItem(storageKeys.USER);
             localStorage.removeItem(storageKeys.TOKEN);
+            localStorage.removeItem(storageKeys.REFRESH_TOKEN);
+
           })
           .catch((err) => console.log(err));
       } catch (error) {
