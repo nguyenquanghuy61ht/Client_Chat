@@ -1,5 +1,6 @@
 import axios from "axios";
 import { STATIC_HOST } from "../constants/common";
+import storageKeys from "../constants/storage-keys";
 const axiosClient = axios.create({
   baseURL: STATIC_HOST,
   headers: {
@@ -32,23 +33,22 @@ axiosClient.interceptors.request.use(
 
 // Add a response interceptor
 axiosClient.interceptors.response.use(
-  function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
+  (response) => {
     return response;
   },
-  function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    // const { config, status, data } = error.response;
-    // const URLS = ["/auth/local/register", "/auth/local"];
-    // if (URLS.includes(config.url) && status === 400) {
-    //   const errorList = data.data || [];
-    //   const firstError = errorList.length > 0 ? errorList[0] : {};
-    //   const messageList = firstError.messages || [];
-    //   const firtsMessage = messageList.length > 0 ? messageList[0] : {};
-    //   throw new Error(firtsMessage.message);
-    // }
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const refreshToken = localStorage.getItem(storageKeys.REFRESH_TOKEN);
+      const response = await axiosClient.post('auth/refresh-token', {
+        refreshToken,
+      });
+      const { accessToken } = response.data;
+      localStorage.setItem(storageKeys.TOKEN, accessToken);
+      axiosClient.defaults.headers['Authorization'] = `Bearer ${accessToken}`;
+      return axiosClient(originalRequest);
+    }
     return Promise.reject(error);
   }
 );
