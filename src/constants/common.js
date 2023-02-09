@@ -1,1 +1,1 @@
-export const STATIC_HOST = "https://server-chat-xwxi.onrender.com/";
+export const STATIC_HOST = "https://venerable-starlight-440540.netlify.app/";
